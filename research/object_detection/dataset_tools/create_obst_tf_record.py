@@ -136,7 +136,7 @@ def dict_to_tf_example(data,
   classes = []
   classes_text = []
   truncated = []
-  poses = []
+  #poses = []
   difficult_obj = []
   masks = []
   if 'object' in data:
@@ -146,16 +146,10 @@ def dict_to_tf_example(data,
         continue
       difficult_obj.append(int(difficult))
 
-      if faces_only:
-        xmin = float(obj['bndbox']['xmin'])
-        xmax = float(obj['bndbox']['xmax'])
-        ymin = float(obj['bndbox']['ymin'])
-        ymax = float(obj['bndbox']['ymax'])
-      else:
-        xmin = float(np.min(nonzero_x_indices))
-        xmax = float(np.max(nonzero_x_indices))
-        ymin = float(np.min(nonzero_y_indices))
-        ymax = float(np.max(nonzero_y_indices))
+      xmin = float(np.min(nonzero_x_indices))
+      xmax = float(np.max(nonzero_x_indices))
+      ymin = float(np.min(nonzero_y_indices))
+      ymax = float(np.max(nonzero_y_indices))
 
       xmins.append(xmin / width)
       ymins.append(ymin / height)
@@ -165,10 +159,9 @@ def dict_to_tf_example(data,
       classes_text.append(class_name.encode('utf8'))
       classes.append(label_map_dict[class_name])
       truncated.append(int(obj['truncated']))
-      poses.append(obj['pose'].encode('utf8'))
-      if not faces_only:
-        mask_remapped = (mask_np != 2).astype(np.uint8)
-        masks.append(mask_remapped)
+      #poses.append(obj['pose'].encode('utf8'))
+      mask_remapped = (mask_np != 2).astype(np.uint8)
+      masks.append(mask_remapped)
 
   feature_dict = {
       'image/height': dataset_util.int64_feature(height),
@@ -180,31 +173,25 @@ def dict_to_tf_example(data,
       'image/key/sha256': dataset_util.bytes_feature(key.encode('utf8')),
       'image/encoded': dataset_util.bytes_feature(encoded_jpg),
       'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),
-      'image/object/bbox/xmin': dataset_util.float_list_feature(xmins),
-      'image/object/bbox/xmax': dataset_util.float_list_feature(xmaxs),
-      'image/object/bbox/ymin': dataset_util.float_list_feature(ymins),
-      'image/object/bbox/ymax': dataset_util.float_list_feature(ymaxs),
+      #'image/object/bbox/xmin': dataset_util.float_list_feature(xmins),
+      #'image/object/bbox/xmax': dataset_util.float_list_feature(xmaxs),
+      #'image/object/bbox/ymin': dataset_util.float_list_feature(ymins),
+      #'image/object/bbox/ymax': dataset_util.float_list_feature(ymaxs),
       'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
       'image/object/class/label': dataset_util.int64_list_feature(classes),
       'image/object/difficult': dataset_util.int64_list_feature(difficult_obj),
       'image/object/truncated': dataset_util.int64_list_feature(truncated),
-      'image/object/view': dataset_util.bytes_list_feature(poses),
+      #'image/object/view': dataset_util.bytes_list_feature(poses),
   }
-  if not faces_only:
-    if mask_type == 'numerical':
-      mask_stack = np.stack(masks).astype(np.float32)
-      masks_flattened = np.reshape(mask_stack, [-1])
-      feature_dict['image/object/mask'] = (
-          dataset_util.float_list_feature(masks_flattened.tolist()))
-    elif mask_type == 'png':
-      encoded_mask_png_list = []
-      for mask in masks:
-        img = PIL.Image.fromarray(mask)
-        output = io.BytesIO()
-        img.save(output, format='PNG')
-        encoded_mask_png_list.append(output.getvalue())
-      feature_dict['image/object/mask'] = (
-          dataset_util.bytes_list_feature(encoded_mask_png_list))
+  encoded_mask_png_list = []
+  for mask in masks:
+    img = PIL.Image.fromarray(mask)
+    output = io.BytesIO()
+    img.save(output, format='PNG')
+    #img.show(output)#chrei
+    encoded_mask_png_list.append(output.getvalue())
+  feature_dict['image/object/mask'] = (
+      dataset_util.bytes_list_feature(encoded_mask_png_list))
 
   example = tf.train.Example(features=tf.train.Features(feature=feature_dict))
   return example
@@ -216,7 +203,7 @@ def create_tf_record(output_filename,
                      annotations_dir,
                      image_dir,
                      examples,
-                     faces_only=True,
+                     faces_only=False,
                      mask_type='png'):
   """Creates a TFRecord file from examples
 

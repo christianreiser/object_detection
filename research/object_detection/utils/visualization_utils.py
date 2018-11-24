@@ -558,7 +558,7 @@ def visualize_boxes_and_labels_on_image_array(
     keypoints=None,
     use_normalized_coordinates=False,
     max_boxes_to_draw=300,
-    min_score_thresh=.2,
+    min_score_thresh=.03,
     agnostic_mode=False,
     line_thickness=0.1,
     groundtruth_box_visualization_color='black',

@@ -19,7 +19,7 @@ import shutil
 
 
 #image height and width
-width  = 1365 
+width  = 1365
 height = 800
 drone_color = np.array([16, 154, 4]) #in airsim
 def split_list(a_list):
@@ -89,10 +89,10 @@ for filename in scene:
     os.rename(src_scene, dst_scene)
 
     # convert airsim images from RGBA to RGB
-    rgba_image = PIL.Image.open(dst_scene)
-    rgb_image = rgba_image.convert('RGB')
+    rgba_image_scene = PIL.Image.open(dst_scene)
+    rgb_image_scene  = rgba_image_scene.convert('RGB')
     # convert from png to jpg
-    rgb_image.save('object_detection/data/airSim/o-airSim/images/'+str(i) + ".jpg")
+    rgb_image_scene.save('object_detection/data/airSim/o-airSim/images/'+str(i) + ".jpg")
     os.remove('object_detection/data/airSim/o-airSim/images/'+str(i) + ".png")
     i += 1
 
@@ -119,25 +119,32 @@ for filename in segmentation:
 
     #create xml file for every scene/seg-pair
     xml_file = open('object_detection/data/airSim/o-airSim/annotations/xmls/'+str(i)+".xml","w+")
-    xml_file.write("<annotation><filename>"+str(i)+".jpg</filename><size><width>"+str(width)+"</width><height>"+str(height)+"</height><depth>3</depth></size><object><pose>Frontal</pose><truncated>0</truncated><difficult>0</difficult></object></annotation>")
+    xml_file.write("<annotation><filename>"+str(i)+".jpg</filename><size><width>"+str(width)+"</width><height>"+str(height)+"</height><depth>3</depth></size><object><truncated>0</truncated><difficult>0</difficult></object></annotation>")
     xml_file.close()
-
+    print('xml at:','object_detection/data/airSim/o-airSim/annotations/xmls/'+str(i)+".xml")
     #write trainval.txt list
     trainval_file.write(str(i)+"\n")
     print("\n"+str(i))
     i += 1
 trainval_file.close()
 
-import numpy as np
+
+
 import matplotlib.pyplot as plt
 
 fig=plt.figure()
-img_scene = rgb_image
-img_seg   = binary_gt 
-fig.add_subplot(1,2,1)
+img_scene = rgb_image_scene
+img_seg   = rgb_image
+img_bin   = binary_gt
+
+fig.add_subplot(1,3,1)
 plt.imshow(img_scene)
-fig.add_subplot(1,2,2)
+
+fig.add_subplot(1,3,2)
 plt.imshow(img_seg)
+
+fig.add_subplot(1,3,3)
+plt.imshow(img_bin)
 plt.show()
 
 #from PIL import Image

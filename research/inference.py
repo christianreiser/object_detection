@@ -16,10 +16,10 @@ for name in files:
         #print([int(s) for s in name[11:17].split() if s.isdigit()])
 
 # get ckpt number from input
-ckpt_num =  input('enter ckpt-num')
+ckpt_num = input('enter ckpt-num')
 
 
-"""
+
 # del old fine_tuned_model_chrei
 if os.path.exists('object_detection/models/train'+str(train_dir_suffix)+'/fine_tuned_model_chrei/'):
     shutil.rmtree('object_detection/models/train'+str(train_dir_suffix)+'/fine_tuned_model_chrei/')
@@ -28,7 +28,7 @@ if os.path.exists('object_detection/models/train'+str(train_dir_suffix)+'/fine_t
 os.system('python object_detection/export_inference_graph.py --input_type image_tensor --pipeline_config_path ./object_detection/samples/configs/mask_rcnn_inception_resnet_v2_atrous_coco.config --trained_checkpoint_prefix ./object_detection/models/train'+str(train_dir_suffix)+'/model.ckpt-'+str(ckpt_num)+' --output_directory ./object_detection/models/train'+str(train_dir_suffix)+'/fine_tuned_model_chrei/')
 
 
-"""
+
 # infere and display
 os.system('python object_detection/seg_test.py '+str(train_dir_suffix)+' '+str(num_img)+' && display object_detection/models/train'+str(train_dir_suffix)+'/fine_tuned_model_chrei/result1.png')
 

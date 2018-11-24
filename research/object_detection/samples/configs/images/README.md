@@ -12,7 +12,7 @@ ssh chrei@volocopter.org@cfd01
 ### if new in terminal
 
 ssh chrei@volocopter.org@cfd01 -X
-cd && cd code/ && source ./venv/bin/activate && cd models/research/ && export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim && cd object_detection/samples/configs/ && cd training/
+cd && cd code/ && source ./venv/bin/activate && cd models/research/ && export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim 
 
 ------------
 ### extract frames from mp4
@@ -98,7 +98,7 @@ cd && cd code/models/research/
 python object_detection/legacy/eval.py --logtostderr --pipeline_config_path=object_detection/samples/configs/training/pipeline.config     --checkpoint_dir=object_detection/samples/configs/training/fine_tuned_model     --eval_dir=object_detection/samples/configs/training/eval
 
 #### mask train (traindir
-python object_detection/legacy/eval.py --logtostderr --pipeline_config_path=object_detection/samples/configs/mask_rcnn_inception_resnet_v2_atrous_coco.config --checkpoint_dir=object_detection/models/train6/fine_tuned_model_chrei --eval_dir=object_detection/models/eval
+python object_detection/legacy/eval.py --logtostderr --pipeline_config_path=object_detection/samples/configs/mask_rcnn_inception_resnet_v2_atrous_coco.config --checkpoint_dir=object_detection/models/train8/fine_tuned_model_chrei --eval_dir=object_detection/models/eval
 
 
 
